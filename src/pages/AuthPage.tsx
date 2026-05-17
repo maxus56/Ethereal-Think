@@ -6,6 +6,24 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Lightbulb } from "lucide-react";
 
+const getAuthErrorMessage = (message: string) => {
+  const normalized = message.toLowerCase();
+
+  if (normalized.includes("invalid login credentials")) {
+    return "Неверный email или пароль. Если аккаунта еще нет, зарегистрируйтесь заново.";
+  }
+
+  if (normalized.includes("email not confirmed")) {
+    return "Email еще не подтвержден. Проверьте письмо от Supabase.";
+  }
+
+  if (normalized.includes("user already registered")) {
+    return "Такой email уже зарегистрирован. Попробуйте войти.";
+  }
+
+  return message;
+};
+
 const AuthPage = () => {
   const { t } = useLanguage();
   const { signIn, signUp, signInWithGoogle, signInWithApple } = useAuth();
@@ -27,7 +45,7 @@ const AuthPage = () => {
         await signIn(email, password);
       }
     } catch (err: any) {
-      setError(err.message);
+      setError(getAuthErrorMessage(err.message || "Authentication failed"));
     } finally {
       setSubmitting(false);
     }
@@ -106,7 +124,7 @@ const AuthPage = () => {
                   setError("");
                   await signInWithGoogle();
                 } catch (err: any) {
-                  setError(err.message);
+                  setError(getAuthErrorMessage(err.message || "Authentication failed"));
                 }
               }}
             >
@@ -129,7 +147,7 @@ const AuthPage = () => {
                   setError("");
                   await signInWithApple();
                 } catch (err: any) {
-                  setError(err.message);
+                  setError(getAuthErrorMessage(err.message || "Authentication failed"));
                 }
               }}
             >

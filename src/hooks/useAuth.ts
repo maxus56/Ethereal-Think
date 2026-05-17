@@ -10,6 +10,7 @@ interface User {
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const authRedirectUrl = `${window.location.origin}${import.meta.env.BASE_URL}`;
 
   useEffect(() => {
     // Check active sessions and sets the user
@@ -48,10 +49,11 @@ export function useAuth() {
 
   const signUp = async (name: string, email: string, password: string) => {
     const { data, error } = await supabase.auth.signUp({
-      email,
+      email: email.trim(),
       password,
       options: {
-        data: { name }
+        data: { name: name.trim() },
+        emailRedirectTo: authRedirectUrl,
       }
     });
 
@@ -63,7 +65,7 @@ export function useAuth() {
 
   const signIn = async (email: string, password: string) => {
     const { data, error } = await supabase.auth.signInWithPassword({
-      email,
+      email: email.trim(),
       password,
     });
 
@@ -77,7 +79,7 @@ export function useAuth() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: window.location.origin
+        redirectTo: authRedirectUrl
       }
     });
     if (error) throw error;
@@ -87,7 +89,7 @@ export function useAuth() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "apple",
       options: {
-        redirectTo: window.location.origin
+        redirectTo: authRedirectUrl
       }
     });
     if (error) throw error;
