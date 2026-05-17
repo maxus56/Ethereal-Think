@@ -13,6 +13,8 @@ import AuthPage from "./pages/AuthPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
+const routerBasename =
+  import.meta.env.BASE_URL === "/" ? undefined : import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const AuthenticatedApp = () => {
   const { user, loading } = useAuth();
@@ -46,7 +48,10 @@ const App = () => (
       <LanguageProvider>
         <AppStateProvider>
           <Sonner />
-          <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+          <BrowserRouter
+            basename={routerBasename}
+            future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+          >
             <AuthenticatedApp />
           </BrowserRouter>
         </AppStateProvider>
