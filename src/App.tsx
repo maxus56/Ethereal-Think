@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { HashRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { LanguageProvider } from "@/i18n/LanguageContext";
@@ -13,8 +13,6 @@ import AuthPage from "./pages/AuthPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
-const routerBasename =
-  import.meta.env.BASE_URL === "/" ? undefined : import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const AuthenticatedApp = () => {
   const { user, loading } = useAuth();
@@ -48,12 +46,9 @@ const App = () => (
       <LanguageProvider>
         <AppStateProvider>
           <Sonner />
-          <BrowserRouter
-            basename={routerBasename}
-            future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
-          >
+          <HashRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
             <AuthenticatedApp />
-          </BrowserRouter>
+          </HashRouter>
         </AppStateProvider>
       </LanguageProvider>
     </TooltipProvider>
